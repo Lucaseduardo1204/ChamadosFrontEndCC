@@ -88,7 +88,7 @@
           <p class="texto-suave">Nenhuma interação registrada.</p>
         }
 
-        <form class="novo-comentario" (ngSubmit)="comentar()">
+        <form class="novo-comentario" [formGroup]="comentarioForm" (ngSubmit)="comentar()" novalidate>
           <label class="campo" [class.invalido]="comentarioCtrl.invalid && comentarioCtrl.touched">
             <span>Novo comentário</span>
             <textarea
@@ -110,7 +110,7 @@
     <aside class="coluna-lateral">
       <section class="card">
         <h2>Atribuir Responsável</h2>
-        <form class="acao-form" (ngSubmit)="atribuirResponsavel()">
+        <form class="acao-form" [formGroup]="responsavelForm" (ngSubmit)="atribuirResponsavel()" novalidate>
           <select [formControl]="responsavelCtrl" aria-label="Responsável">
             <option [ngValue]="null" disabled>Selecione um analista…</option>
             @for (analista of analistas(); track analista.id) {
@@ -132,7 +132,7 @@
         @if (fechado()) {
           <p class="texto-suave aviso">Chamados fechados não podem ter a situação alterada.</p>
         }
-        <form class="acao-form" (ngSubmit)="alterarSituacao()">
+        <form class="acao-form" [formGroup]="situacaoForm" (ngSubmit)="alterarSituacao()" novalidate>
           <select [formControl]="situacaoCtrl" aria-label="Nova situação">
             <option [ngValue]="null" disabled>Selecione…</option>
             @for (situacao of situacoesPermitidas(); track situacao) {

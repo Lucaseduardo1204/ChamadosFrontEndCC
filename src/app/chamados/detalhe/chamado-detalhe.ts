@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit, computed, inject, input, signal } from '@angular/core';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import {
@@ -51,6 +51,12 @@ export class ChamadoDetalhe implements OnInit {
     nonNullable: true,
     validators: [Validators.required, Validators.maxLength(LIMITE_INTERACAO)],
   });
+
+  // Cada <form> precisa de um [formGroup]: sem ele o ReactiveFormsModule não assume o formulário,
+  // o (ngSubmit) nunca dispara e o navegador faz o submit nativo (recarregando a página).
+  protected readonly responsavelForm = new FormGroup({ responsavel: this.responsavelCtrl });
+  protected readonly situacaoForm = new FormGroup({ situacao: this.situacaoCtrl });
+  protected readonly comentarioForm = new FormGroup({ texto: this.comentarioCtrl });
 
   /** Só analistas ativos podem ser responsáveis. */
   protected readonly analistas = computed(() =>
