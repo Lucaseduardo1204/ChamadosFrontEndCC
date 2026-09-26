@@ -1,0 +1,104 @@
+.titulo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.titulo h1 {
+  font-size: 1.4rem;
+}
+
+.confirmacao {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--raio);
+  background: var(--cor-perigo-suave);
+  color: var(--cor-perigo-texto);
+  font-weight: 500;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 1rem;
+  align-items: start;
+}
+
+.coluna-lateral .card + .card {
+  margin-top: 1rem;
+}
+
+.dados {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.75rem 1.25rem;
+  margin: 0 0 1.25rem;
+}
+
+.dados dt,
+.rotulo {
+  color: var(--cor-texto-suave);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.dados dd {
+  margin: 0.15rem 0 0;
+}
+
+.descricao {
+  margin: 0.35rem 0 0;
+  white-space: pre-wrap;
+}
+
+.interacao {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+.interacao header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.interacao p {
+  margin: 0.35rem 0 0;
+  white-space: pre-wrap;
+}
+
+.novo-comentario {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.novo-comentario .campo {
+  align-self: stretch;
+}
+
+.acao-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.aviso {
+  margin: 0 0 0.6rem;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 1024px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

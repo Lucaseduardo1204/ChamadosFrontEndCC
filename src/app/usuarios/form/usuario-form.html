@@ -1,0 +1,186 @@
+<div class="pagina-cabecalho">
+  <div class="titulo">
+    <h1>{{ edicao() ? 'Editar usuário' : 'Novo usuário' }}</h1>
+    @if (usuario(); as u) {
+      <span class="badge" [class]="u.ativo ? 'usuario-ativo' : 'usuario-inativo'">
+        {{ u.ativo ? 'Ativo' : 'Inativo' }}
+      </span>
+    }
+  </div>
+  <div class="acoes">
+    <a class="btn" routerLink="/usuarios">Voltar</a>
+  </div>
+</div>
+
+@if (carregando()) {
+  <div class="carregando"><span class="spinner"></span> Carregando usuário…</div>
+} @else if (edicao() && !usuario()) {
+  <div class="card">
+    <p>Não foi possível carregar o usuário.</p>
+  </div>
+} @else {
+  <div class="layout" [class.com-lateral]="edicao()">
+    <form class="card" [formGroup]="form" (ngSubmit)="salvar()" novalidate>
+      <h2>Dados</h2>
+      <div class="grade">
+        <label class="campo largura-total" [class.invalido]="invalido('nome')">
+          <span>Nome *</span>
+          <input type="text" formControlName="nome" [attr.maxlength]="limites.nome" />
+          @if (invalido('nome')) {
+            <small class="erro-campo">{{ mensagem('nome') }}</small>
+          }
+        </label>
+
+        <label class="campo largura-total" [class.invalido]="invalido('email')">
+          <span>E-mail *</span>
+          <input
+            type="email"
+            formControlName="email"
+            autocomplete="off"
+            [attr.maxlength]="limites.email"
+          />
+          @if (invalido('email')) {
+            <small class="erro-campo">{{ mensagem('email') }}</small>
+          }
+        </label>
+
+        <label class="campo" [class.invalido]="invalido('tipoUsuario')">
+          <span>Tipo *</span>
+          <select formControlName="tipoUsuario">
+            <option value="" disabled>Selecione…</option>
+            @for (tipo of tiposUsuario; track tipo) {
+              <option [value]="tipo">{{ tipoLabel[tipo] }}</option>
+            }
+          </select>
+          @if (invalido('tipoUsuario')) {
+            <small class="erro-campo">{{ mensagem('tipoUsuario') }}</small>
+          }
+        </label>
+
+        <label class="campo" [class.invalido]="invalido('fundacao')">
+          <span>Fundação *</span>
+          <select formControlName="fundacao">
+            <option value="" disabled>Selecione…</option>
+            @for (fundacao of fundacoes; track fundacao) {
+              <option [value]="fundacao">{{ fundacao }}</option>
+            }
+          </select>
+          @if (invalido('fundacao')) {
+            <small class="erro-campo">{{ mensagem('fundacao') }}</small>
+          }
+        </label>
+
+        @if (!edicao()) {
+          <label class="campo" [class.invalido]="invalido('senha')">
+            <span>Senha *</span>
+            <input
+              type="password"
+              formControlName="senha"
+              autocomplete="new-password"
+              [attr.maxlength]="limites.senhaMax"
+            />
+            @if (invalido('senha')) {
+              <small class="erro-campo">{{ mensagem('senha') }}</small>
+            } @else {
+              <small class="dica">Mínimo de {{ limites.senhaMin }} caracteres.</small>
+            }
+          </label>
+
+          <label class="campo" [class.invalido]="invalido('confirmarSenha')">
+            <span>Confirmar senha *</span>
+            <input
+              type="password"
+              formControlName="confirmarSenha"
+              autocomplete="new-password"
+              [attr.maxlength]="limites.senhaMax"
+            />
+            @if (invalido('confirmarSenha')) {
+              <small class="erro-campo">{{ mensagem('confirmarSenha') }}</small>
+            }
+          </label>
+        }
+      </div>
+
+      @if (ehVoce()) {
+        <p class="texto-suave aviso">
+          Este é o seu usuário: o tipo precisa continuar Analista para você não perder o acesso.
+        </p>
+      }
+
+      <div class="acoes rodape">
+        <a class="btn" routerLink="/usuarios">Cancelar</a>
+        <button type="submit" class="btn btn-primario" [disabled]="salvando()">
+          @if (salvando()) {
+            <span class="spinner spinner-pequeno" aria-hidden="true"></span>
+          }
+          Salvar
+        </button>
+      </div>
+    </form>
+
+    @if (usuario(); as u) {
+      <aside class="coluna-lateral">
+        <form class="card acao-form" [formGroup]="formSenha" (ngSubmit)="salvarSenha()" novalidate>
+          <h2>Alterar senha</h2>
+          <label class="campo" [class.invalido]="senhaInvalida('senha')">
+            <span>Nova senha</span>
+            <input
+              type="password"
+              formControlName="senha"
+              autocomplete="new-password"
+              [attr.maxlength]="limites.senhaMax"
+            />
+            @if (senhaInvalida('senha')) {
+              <small class="erro-campo">{{ mensagemSenha('senha') }}</small>
+            }
+          </label>
+          <label class="campo" [class.invalido]="senhaInvalida('confirmarSenha')">
+            <span>Confirmar nova senha</span>
+            <input
+              type="password"
+              formControlName="confirmarSenha"
+              autocomplete="new-password"
+              [attr.maxlength]="limites.senhaMax"
+            />
+            @if (senhaInvalida('confirmarSenha')) {
+              <small class="erro-campo">{{ mensagemSenha('confirmarSenha') }}</small>
+            }
+          </label>
+          <button type="submit" class="btn btn-primario" [disabled]="salvandoSenha()">
+            Salvar senha
+          </button>
+        </form>
+
+        <section class="card">
+          <h2>Acesso</h2>
+          @if (ehVoce()) {
+            <p class="texto-suave">Você não pode desativar o seu próprio usuário.</p>
+          } @else if (u.ativo) {
+            <p class="texto-suave">
+              Desativar impede o login e tira o usuário da lista de responsáveis. Os chamados e
+              comentários dele continuam no histórico.
+            </p>
+            <button
+              type="button"
+              class="btn btn-perigo"
+              [disabled]="alterandoAtivo()"
+              (click)="alterarAtivo()"
+            >
+              Desativar usuário
+            </button>
+          } @else {
+            <p class="texto-suave">Este usuário está desativado e não consegue entrar.</p>
+            <button
+              type="button"
+              class="btn btn-primario"
+              [disabled]="alterandoAtivo()"
+              (click)="alterarAtivo()"
+            >
+              Ativar usuário
+            </button>
+          }
+        </section>
+      </aside>
+    }
+  </div>
+}

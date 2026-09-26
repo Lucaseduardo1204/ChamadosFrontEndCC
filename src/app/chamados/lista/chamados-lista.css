@@ -1,0 +1,38 @@
+.busca {
+  max-width: 420px;
+  margin-bottom: 1rem;
+}
+
+.linha-clicavel {
+  cursor: pointer;
+}
+
+.linha-clicavel:hover,
+.linha-clicavel:focus-visible {
+  background: var(--cor-primaria-suave);
+  outline: none;
+}
+
+.codigo {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.resumo {
+  min-width: 200px;
+}
+
+.data {
+  white-space: nowrap;
+}
+
+.vazio {
+  padding: 2rem;
+  text-align: center;
+  color: var(--cor-texto-suave);
+}
+
+.spinner-escuro {
+  border-color: var(--cor-borda);
+  border-top-color: var(--cor-primaria);
+}

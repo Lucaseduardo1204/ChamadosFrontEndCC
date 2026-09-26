@@ -1,0 +1,158 @@
+@if (carregando()) {
+  <div class="carregando"><span class="spinner"></span> Carregando chamado…</div>
+} @else if (chamado(); as c) {
+  <div class="pagina-cabecalho">
+    <div class="titulo">
+      <h1>{{ c.codigoChamado }}</h1>
+      <span class="badge" [class]="'situacao-' + c.situacao">{{ situacaoLabel[c.situacao] }}</span>
+      <span class="badge" [class]="'prioridade-' + c.prioridade">
+        {{ prioridadeLabel[c.prioridade] }}
+      </span>
+    </div>
+    <div class="acoes">
+      <a class="btn" routerLink="/chamados">Voltar</a>
+      @if (confirmandoInativacao()) {
+        <span class="confirmacao" role="alert">
+          Inativar este chamado?
+          <button
+            type="button"
+            class="btn btn-perigo"
+            (click)="inativar()"
+            [disabled]="processando()"
+          >
+            Sim, inativar
+          </button>
+          <button type="button" class="btn" (click)="confirmandoInativacao.set(false)">
+            Cancelar
+          </button>
+        </span>
+      } @else {
+        <button type="button" class="btn btn-perigo" (click)="confirmandoInativacao.set(true)">
+          Inativar Chamado
+        </button>
+      }
+    </div>
+  </div>
+
+  <div class="layout">
+    <div class="coluna-principal">
+      <section class="card">
+        <h2>{{ c.resumo }}</h2>
+        <dl class="dados">
+          <div>
+            <dt>Lotação</dt>
+            <dd>{{ c.lotacao }}</dd>
+          </div>
+          <div>
+            <dt>Tipo</dt>
+            <dd>{{ tipoLabel[c.tipo] }}</dd>
+          </div>
+          <div>
+            <dt>Sistema</dt>
+            <dd>{{ c.sistema }}</dd>
+          </div>
+          <div>
+            <dt>Criado em</dt>
+            <dd>{{ c.dataHoraCriacao | date: 'dd/MM/yyyy HH:mm' }}</dd>
+          </div>
+          <div>
+            <dt>Solicitante</dt>
+            <dd>{{ c.solicitante }}</dd>
+          </div>
+          <div>
+            <dt>Responsável</dt>
+            <dd>
+              @if (c.responsavel; as responsavel) {
+                {{ responsavel.nome }}
+              } @else {
+                <span class="texto-suave">Não atribuído</span>
+              }
+            </dd>
+          </div>
+        </dl>
+        <h3 class="rotulo">Descrição</h3>
+        <p class="descricao">{{ c.descricao }}</p>
+      </section>
+
+      <section class="card">
+        <h2>Interações</h2>
+        @for (interacao of interacoesOrdenadas(); track interacao.id) {
+          <article class="interacao">
+            <header>
+              <strong>{{ interacao.autor.nome }}</strong>
+              <span class="texto-suave">{{ interacao.dataHora | date: 'dd/MM/yyyy HH:mm' }}</span>
+            </header>
+            <p>{{ interacao.texto }}</p>
+          </article>
+        } @empty {
+          <p class="texto-suave">Nenhuma interação registrada.</p>
+        }
+
+        <form class="novo-comentario" (ngSubmit)="comentar()">
+          <label class="campo" [class.invalido]="comentarioCtrl.invalid && comentarioCtrl.touched">
+            <span>Novo comentário</span>
+            <textarea
+              [formControl]="comentarioCtrl"
+              rows="3"
+              [attr.maxlength]="limiteInteracao"
+            ></textarea>
+            <small class="contador">
+              {{ comentarioCtrl.value.length }}/{{ limiteInteracao }}
+            </small>
+          </label>
+          <button type="submit" class="btn btn-primario" [disabled]="processando()">
+            Comentar
+          </button>
+        </form>
+      </section>
+    </div>
+
+    <aside class="coluna-lateral">
+      <section class="card">
+        <h2>Atribuir Responsável</h2>
+        <form class="acao-form" (ngSubmit)="atribuirResponsavel()">
+          <select [formControl]="responsavelCtrl" aria-label="Responsável">
+            <option [ngValue]="null" disabled>Selecione um analista…</option>
+            @for (analista of analistas(); track analista.id) {
+              <option [ngValue]="analista.id">{{ analista.nome }}</option>
+            }
+          </select>
+          <button
+            type="submit"
+            class="btn btn-primario"
+            [disabled]="processando() || responsavelCtrl.invalid"
+          >
+            Atribuir
+          </button>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2>Alterar Situação</h2>
+        @if (fechado()) {
+          <p class="texto-suave aviso">Chamados fechados não podem ter a situação alterada.</p>
+        }
+        <form class="acao-form" (ngSubmit)="alterarSituacao()">
+          <select [formControl]="situacaoCtrl" aria-label="Nova situação">
+            <option [ngValue]="null" disabled>Selecione…</option>
+            @for (situacao of situacoesPermitidas(); track situacao) {
+              <option [ngValue]="situacao">{{ situacaoLabel[situacao] }}</option>
+            }
+          </select>
+          <button
+            type="submit"
+            class="btn btn-primario"
+            [disabled]="fechado() || processando() || situacaoCtrl.invalid"
+          >
+            Alterar
+          </button>
+        </form>
+      </section>
+    </aside>
+  </div>
+} @else {
+  <div class="card">
+    <p>Não foi possível carregar o chamado.</p>
+    <a class="btn" routerLink="/chamados">Voltar</a>
+  </div>
+}

@@ -1,0 +1,77 @@
+.titulo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.titulo h1 {
+  font-size: 1.4rem;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 720px);
+  gap: 1rem;
+  align-items: start;
+}
+
+.layout.com-lateral {
+  grid-template-columns: minmax(0, 1fr) 300px;
+}
+
+.grade {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem 1.25rem;
+}
+
+.largura-total {
+  grid-column: 1 / -1;
+}
+
+.dica {
+  color: var(--cor-texto-suave);
+  font-size: 0.85rem;
+}
+
+.aviso {
+  margin: 1rem 0 0;
+  font-size: 0.9rem;
+}
+
+.rodape {
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+.coluna-lateral .card + .card {
+  margin-top: 1rem;
+}
+
+.acao-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.acao-form h2 {
+  margin-bottom: 0;
+}
+
+.coluna-lateral p {
+  margin: 0 0 0.75rem;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 1024px) {
+  .layout.com-lateral {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .grade {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

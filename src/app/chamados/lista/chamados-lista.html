@@ -1,0 +1,89 @@
+<div class="pagina-cabecalho">
+  <h1>Chamados</h1>
+  <div class="acoes">
+    <button type="button" class="btn" (click)="exportar()" [disabled]="exportando()">
+      @if (exportando()) {
+        <span class="spinner spinner-pequeno spinner-escuro" aria-hidden="true"></span>
+      }
+      Exportar Excel
+    </button>
+    <a class="btn btn-primario" routerLink="/chamados/novo">Novo Chamado</a>
+  </div>
+</div>
+
+<input
+  type="search"
+  class="busca"
+  placeholder="Pesquisar por código, resumo ou solicitante"
+  aria-label="Pesquisar chamados"
+  [value]="busca()"
+  (input)="busca.set($any($event.target).value)"
+/>
+
+@if (carregando()) {
+  <div class="carregando"><span class="spinner"></span> Carregando chamados…</div>
+} @else {
+  <div class="tabela-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Lotação</th>
+          <th>Situação</th>
+          <th>Prioridade</th>
+          <th>Tipo</th>
+          <th>Sistema</th>
+          <th>Resumo</th>
+          <th>Solicitante</th>
+          <th>Responsável</th>
+          <th>Data</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (chamado of chamadosFiltrados(); track chamado.id) {
+          <tr
+            class="linha-clicavel"
+            tabindex="0"
+            (click)="abrir(chamado)"
+            (keydown.enter)="abrir(chamado)"
+          >
+            <td class="codigo">{{ chamado.codigoChamado }}</td>
+            <td>{{ chamado.lotacao }}</td>
+            <td>
+              <span class="badge" [class]="'situacao-' + chamado.situacao">
+                {{ situacaoLabel[chamado.situacao] }}
+              </span>
+            </td>
+            <td>
+              <span class="badge" [class]="'prioridade-' + chamado.prioridade">
+                {{ prioridadeLabel[chamado.prioridade] }}
+              </span>
+            </td>
+            <td>{{ tipoLabel[chamado.tipo] }}</td>
+            <td>{{ chamado.sistema }}</td>
+            <td class="resumo">{{ chamado.resumo }}</td>
+            <td>{{ chamado.solicitante }}</td>
+            <td>
+              @if (chamado.responsavel; as responsavel) {
+                {{ responsavel.nome }}
+              } @else {
+                <span class="texto-suave">—</span>
+              }
+            </td>
+            <td class="data">{{ chamado.dataHoraCriacao | date: 'dd/MM/yyyy HH:mm' }}</td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="10" class="vazio">
+              {{
+                busca()
+                  ? 'Nenhum chamado encontrado para a pesquisa.'
+                  : 'Nenhum chamado cadastrado.'
+              }}
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

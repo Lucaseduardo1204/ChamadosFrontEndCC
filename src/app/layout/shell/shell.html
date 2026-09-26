@@ -1,0 +1,17 @@
+<header class="topo">
+  <span class="logo" aria-hidden="true">◆</span>
+  <span class="nome-sistema">Controle de Chamados</span>
+  <app-tema-toggle class="tema" />
+</header>
+
+<div class="corpo">
+  <nav class="sidebar" aria-label="Menu principal">
+    <a routerLink="/chamados" routerLinkActive="ativo">Chamados</a>
+    <a routerLink="/usuarios" routerLinkActive="ativo">Usuários</a>
+    <button type="button" class="sair" (click)="sair()">Sair</button>
+  </nav>
+
+  <main class="conteudo">
+    <router-outlet />
+  </main>
+</div>

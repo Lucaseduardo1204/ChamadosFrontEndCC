@@ -1,0 +1,104 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.topo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  height: 56px;
+  padding: 0 1.25rem;
+  background: var(--cor-superficie);
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+.logo {
+  color: var(--cor-destaque);
+  font-size: 1.25rem;
+}
+
+.nome-sistema {
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+.tema {
+  margin-left: auto;
+}
+
+.corpo {
+  display: flex;
+  flex: 1;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  width: 200px;
+  flex-shrink: 0;
+  padding: 1rem 0.75rem;
+  background: var(--cor-superficie);
+  border-right: 1px solid var(--cor-borda);
+}
+
+.sidebar a,
+.sidebar .sair {
+  display: block;
+  padding: 0.55rem 0.75rem;
+  border: 0;
+  border-radius: var(--raio);
+  background: none;
+  color: var(--cor-texto);
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.sidebar a:hover,
+.sidebar .sair:hover {
+  background: var(--cor-fundo);
+}
+
+.sidebar a.ativo {
+  background: var(--cor-primaria-suave);
+  color: var(--cor-destaque);
+  font-weight: 600;
+}
+
+.sidebar .sair {
+  margin-top: auto;
+  color: var(--cor-perigo-texto);
+}
+
+.conteudo {
+  flex: 1;
+  min-width: 0;
+  padding: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .corpo {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    flex-direction: row;
+    width: auto;
+    padding: 0.5rem 0.75rem;
+    border-right: 0;
+    border-bottom: 1px solid var(--cor-borda);
+  }
+
+  .sidebar .sair {
+    margin-top: 0;
+    margin-left: auto;
+  }
+
+  .conteudo {
+    padding: 1rem;
+  }
+}

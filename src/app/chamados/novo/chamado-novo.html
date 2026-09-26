@@ -1,0 +1,108 @@
+<div class="pagina-cabecalho">
+  <h1>Novo chamado</h1>
+</div>
+
+<form class="card formulario" [formGroup]="form" (ngSubmit)="salvar()" novalidate>
+  <div class="grade">
+    <label class="campo" [class.invalido]="invalido('codigoChamado')">
+      <span>Código do chamado *</span>
+      <input type="text" formControlName="codigoChamado" [attr.maxlength]="limites.codigoChamado" />
+      @if (invalido('codigoChamado')) {
+        <small class="erro-campo">{{ mensagemCampo('codigoChamado') }}</small>
+      }
+    </label>
+
+    <label class="campo" [class.invalido]="invalido('lotacao')">
+      <span>Lotação *</span>
+      <select formControlName="lotacao">
+        <option value="" disabled>Selecione…</option>
+        @for (lotacao of lotacoes; track lotacao) {
+          <option [value]="lotacao">{{ lotacao }}</option>
+        }
+      </select>
+      @if (invalido('lotacao')) {
+        <small class="erro-campo">{{ mensagemCampo('lotacao') }}</small>
+      }
+    </label>
+
+    <label class="campo" [class.invalido]="invalido('prioridade')">
+      <span>Prioridade *</span>
+      <select formControlName="prioridade">
+        <option value="" disabled>Selecione…</option>
+        @for (prioridade of prioridades; track prioridade) {
+          <option [value]="prioridade">{{ prioridadeLabel[prioridade] }}</option>
+        }
+      </select>
+      @if (invalido('prioridade')) {
+        <small class="erro-campo">{{ mensagemCampo('prioridade') }}</small>
+      }
+    </label>
+
+    <label class="campo" [class.invalido]="invalido('tipo')">
+      <span>Tipo *</span>
+      <select formControlName="tipo">
+        <option value="" disabled>Selecione…</option>
+        @for (tipo of tipos; track tipo) {
+          <option [value]="tipo">{{ tipoLabel[tipo] }}</option>
+        }
+      </select>
+      @if (invalido('tipo')) {
+        <small class="erro-campo">{{ mensagemCampo('tipo') }}</small>
+      }
+    </label>
+
+    <label class="campo" [class.invalido]="invalido('sistema')">
+      <span>Sistema *</span>
+      <input type="text" formControlName="sistema" [attr.maxlength]="limites.sistema" />
+      @if (invalido('sistema')) {
+        <small class="erro-campo">{{ mensagemCampo('sistema') }}</small>
+      }
+    </label>
+
+    <label class="campo" [class.invalido]="invalido('solicitante')">
+      <span>Solicitante *</span>
+      <input
+        type="text"
+        formControlName="solicitante"
+        placeholder="Nome de quem abriu o chamado"
+        [attr.maxlength]="limites.solicitante"
+      />
+      @if (invalido('solicitante')) {
+        <small class="erro-campo">{{ mensagemCampo('solicitante') }}</small>
+      }
+    </label>
+
+    <label class="campo largura-total" [class.invalido]="invalido('resumo')">
+      <span>Resumo *</span>
+      <input type="text" formControlName="resumo" [attr.maxlength]="limites.resumo" />
+      @if (invalido('resumo')) {
+        <small class="erro-campo">{{ mensagemCampo('resumo') }}</small>
+      }
+    </label>
+
+    <label class="campo largura-total" [class.invalido]="invalido('descricao')">
+      <span>Descrição *</span>
+      <textarea
+        formControlName="descricao"
+        rows="6"
+        [attr.maxlength]="limites.descricao"
+      ></textarea>
+      <small class="contador">
+        {{ form.controls.descricao.value.length }}/{{ limites.descricao }}
+      </small>
+      @if (invalido('descricao')) {
+        <small class="erro-campo">{{ mensagemCampo('descricao') }}</small>
+      }
+    </label>
+  </div>
+
+  <div class="acoes rodape">
+    <a class="btn" routerLink="/chamados">Cancelar</a>
+    <button type="submit" class="btn btn-primario" [disabled]="salvando()">
+      @if (salvando()) {
+        <span class="spinner spinner-pequeno" aria-hidden="true"></span>
+      }
+      Salvar
+    </button>
+  </div>
+</form>

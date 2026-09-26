@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <title>Chamados</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <script>
+      // Aplica o tema salvo antes do Angular iniciar, para a página não piscar no tema errado.
+      try {
+        var tema = localStorage.getItem('tema');
+        if (tema === 'claro' || tema === 'escuro') document.documentElement.dataset.tema = tema;
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <app-root></app-root>
+  </body>
+</html>

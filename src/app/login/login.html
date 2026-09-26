@@ -1,0 +1,36 @@
+<main class="login-pagina">
+  <app-tema-toggle class="tema" />
+  <form class="card login-card" [formGroup]="form" (ngSubmit)="entrar()" novalidate>
+    <div class="login-titulo">
+      <span class="logo" aria-hidden="true">◆</span>
+      <h1>Controle de Chamados</h1>
+    </div>
+
+    <label class="campo" [class.invalido]="invalido('email')">
+      <span>E-mail</span>
+      <input type="text" formControlName="email" autocomplete="username" />
+      @if (invalido('email')) {
+        <small class="erro-campo">Informe o e-mail.</small>
+      }
+    </label>
+
+    <label class="campo" [class.invalido]="invalido('senha')">
+      <span>Senha</span>
+      <input type="password" formControlName="senha" autocomplete="current-password" />
+      @if (invalido('senha')) {
+        <small class="erro-campo">Informe a senha.</small>
+      }
+    </label>
+
+    @if (erro(); as mensagem) {
+      <p class="alerta-erro" role="alert">{{ mensagem }}</p>
+    }
+
+    <button type="submit" class="btn btn-primario" [disabled]="enviando()">
+      @if (enviando()) {
+        <span class="spinner spinner-pequeno" aria-hidden="true"></span>
+      }
+      Entrar
+    </button>
+  </form>
+</main>

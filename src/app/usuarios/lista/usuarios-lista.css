@@ -1,0 +1,45 @@
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.filtros input {
+  flex: 1 1 280px;
+  max-width: 420px;
+}
+
+.filtros select {
+  width: auto;
+}
+
+.nome {
+  font-weight: 600;
+}
+
+.voce {
+  margin-left: 0.4rem;
+  color: var(--cor-texto-suave);
+  font-size: 0.8rem;
+  font-weight: 400;
+}
+
+tr.inativo td:not(:last-child) {
+  color: var(--cor-texto-suave);
+}
+
+.acoes-linha {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.acoes-linha .btn + .btn {
+  margin-left: 0.4rem;
+}
+
+.vazio {
+  padding: 2rem;
+  text-align: center;
+  color: var(--cor-texto-suave);
+}
