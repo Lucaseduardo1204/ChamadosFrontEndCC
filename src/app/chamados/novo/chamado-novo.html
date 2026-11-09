@@ -14,12 +14,7 @@
 
     <label class="campo" [class.invalido]="invalido('lotacao')">
       <span>Lotação *</span>
-      <select formControlName="lotacao">
-        <option value="" disabled>Selecione…</option>
-        @for (lotacao of lotacoes; track lotacao) {
-          <option [value]="lotacao">{{ lotacao }}</option>
-        }
-      </select>
+      <input type="text" formControlName="lotacao" [attr.maxlength]="limites.lotacao" />
       @if (invalido('lotacao')) {
         <small class="erro-campo">{{ mensagemCampo('lotacao') }}</small>
       }

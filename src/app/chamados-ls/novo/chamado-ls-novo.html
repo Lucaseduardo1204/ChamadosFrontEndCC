@@ -1,0 +1,97 @@
+<div class="pagina-cabecalho">
+  <h1>Novo chamado LS</h1>
+</div>
+
+@if (carregando()) {
+  <div class="carregando"><span class="spinner"></span> Carregando chamados…</div>
+} @else {
+  <form class="card formulario" [formGroup]="form" (ngSubmit)="salvar()" novalidate>
+    <label class="campo" [class.invalido]="invalido('codigoChamado')">
+      <span>Chamado relacionado</span>
+      <input
+        type="text"
+        formControlName="codigoChamado"
+        list="chamados-elegiveis"
+        placeholder="Opcional: código do chamado deste sistema"
+        autocomplete="off"
+      />
+      <datalist id="chamados-elegiveis">
+        @for (c of elegiveis(); track c.id) {
+          <option [value]="c.codigoChamado">{{ c.resumo }}</option>
+        }
+      </datalist>
+      @if (invalido('codigoChamado')) {
+        <small class="erro-campo">{{ mensagemCampo('codigoChamado') }}</small>
+      } @else if (selecionado(); as c) {
+        <small class="texto-suave">{{ c.resumo }} · {{ c.lotacao }} · {{ c.solicitante }}</small>
+      } @else {
+        <small class="texto-suave">
+          Deixe em branco se o chamado do LS não veio de um chamado deste sistema.
+          {{ elegiveis().length }} chamados podem ser relacionados (fechados e os que já estão em
+          análise no LS ficam de fora).
+        </small>
+      }
+    </label>
+
+    <label class="campo" [class.invalido]="invalido('numeroLs')">
+      <span>Nº do chamado no LS *</span>
+      <input type="text" formControlName="numeroLs" [attr.maxlength]="limites.numeroLs" />
+      @if (invalido('numeroLs')) {
+        <small class="erro-campo">{{ mensagemCampo('numeroLs') }}</small>
+      }
+    </label>
+
+    <label class="campo" [class.invalido]="invalido('resumo')">
+      <span>Resumo{{ selecionado() ? '' : ' *' }}</span>
+      <input
+        type="text"
+        formControlName="resumo"
+        [attr.maxlength]="limites.resumo"
+        [placeholder]="selecionado()?.resumo ?? ''"
+      />
+      @if (invalido('resumo')) {
+        <small class="erro-campo">{{ mensagemCampo('resumo') }}</small>
+      } @else if (selecionado()) {
+        <small class="texto-suave">Em branco, usa o resumo do chamado relacionado.</small>
+      }
+    </label>
+
+    <label class="campo" [class.invalido]="invalido('lotacao')">
+      <span>Lotação</span>
+      <input
+        type="text"
+        formControlName="lotacao"
+        [attr.maxlength]="limites.lotacao"
+        [placeholder]="selecionado()?.lotacao ?? ''"
+      />
+      @if (invalido('lotacao')) {
+        <small class="erro-campo">{{ mensagemCampo('lotacao') }}</small>
+      }
+    </label>
+
+    <label class="campo" [class.invalido]="invalido('observacao')">
+      <span>Observação</span>
+      <textarea
+        formControlName="observacao"
+        rows="4"
+        [attr.maxlength]="limites.observacao"
+      ></textarea>
+      <small class="contador">
+        {{ form.controls.observacao.value.length }}/{{ limites.observacao }}
+      </small>
+      @if (invalido('observacao')) {
+        <small class="erro-campo">{{ mensagemCampo('observacao') }}</small>
+      }
+    </label>
+
+    <div class="acoes rodape">
+      <a class="btn" routerLink="/chamados-ls">Cancelar</a>
+      <button type="submit" class="btn btn-primario" [disabled]="salvando()">
+        @if (salvando()) {
+          <span class="spinner spinner-pequeno" aria-hidden="true"></span>
+        }
+        Registrar no LS
+      </button>
+    </div>
+  </form>
+}

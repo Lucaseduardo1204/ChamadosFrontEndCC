@@ -1,0 +1,184 @@
+<div class="pagina-cabecalho">
+  <h1>Dashboard</h1>
+  <a class="btn btn-primario" routerLink="/chamados/novo">Novo Chamado</a>
+</div>
+
+<!-- Um só conjunto de filtros, acima de tudo que ele afeta -->
+<div class="filtros">
+  <label class="campo">
+    <span>Período (abertura)</span>
+    <select (change)="periodo.set($any($event.target).value)">
+      @for (p of periodos; track p.valor) {
+        <option [value]="p.valor" [selected]="p.valor === periodo()">{{ p.rotulo }}</option>
+      }
+    </select>
+  </label>
+  <label class="campo">
+    <span>Lotação</span>
+    <select (change)="lotacao.set($any($event.target).value)">
+      <option value="">Todas</option>
+      @for (l of lotacoes(); track l) {
+        <option [value]="l" [selected]="l === lotacao()">{{ l }}</option>
+      }
+    </select>
+  </label>
+</div>
+
+@if (carregando()) {
+  <div class="carregando"><span class="spinner"></span> Carregando dashboard…</div>
+} @else {
+  <div class="indicadores">
+    <a class="indicador" routerLink="/chamados" [queryParams]="link({})">
+      <span class="indicador-rotulo">Total</span>
+      <span class="indicador-valor">{{ resumo().total }}</span>
+    </a>
+    <a class="indicador" routerLink="/chamados" [queryParams]="link({ situacao: ['ABERTA'] })">
+      <span class="indicador-rotulo"><span class="ponto situacao-ABERTA"></span>Abertos</span>
+      <span class="indicador-valor">{{ resumo().abertos }}</span>
+    </a>
+    <a class="indicador" routerLink="/chamados" [queryParams]="link({ situacao: ['RESOLVIDA'] })">
+      <span class="indicador-rotulo"><span class="ponto situacao-RESOLVIDA"></span>Resolvidos</span>
+      <span class="indicador-valor">{{ resumo().resolvidos }}</span>
+    </a>
+    <a class="indicador" routerLink="/chamados" [queryParams]="link({ situacao: ['FECHADA'] })">
+      <span class="indicador-rotulo"><span class="ponto situacao-FECHADA"></span>Fechados</span>
+      <span class="indicador-valor">{{ resumo().fechados }}</span>
+    </a>
+    <a
+      class="indicador"
+      routerLink="/chamados"
+      [queryParams]="link({ situacao: ['ABERTA'], responsavel: [semResponsavel] })"
+    >
+      <span class="indicador-rotulo">Abertos sem responsável</span>
+      <span class="indicador-valor" [class.alerta]="resumo().abertosSemResponsavel > 0">
+        {{ resumo().abertosSemResponsavel }}
+      </span>
+    </a>
+    <div class="indicador">
+      <span class="indicador-rotulo">Abertos bloqueio/crítico</span>
+      <span class="indicador-valor" [class.alerta]="resumo().abertosUrgentes > 0">
+        {{ resumo().abertosUrgentes }}
+      </span>
+    </div>
+    <a class="indicador" routerLink="/chamados-ls">
+      <span class="indicador-rotulo"
+        ><span class="ponto ls-EM_ANALISE"></span>Em análise no LS</span
+      >
+      <span class="indicador-valor">{{ emAnaliseNoLs() ?? '—' }}</span>
+    </a>
+  </div>
+
+  <section class="card serie">
+    <div class="serie-cabecalho">
+      <h2>Novos chamados por {{ granularidade() === 'dia' ? 'dia' : 'mês' }}</h2>
+      <!-- Legenda viva: o ponto sob o mouse, ou o pico -->
+      <p class="serie-destaque" aria-live="polite">
+        @if (resumo().total > 0 && (pontoAtivo() ?? pico()); as ponto) {
+          @if (!pontoAtivo()) {
+            <span class="texto-suave">Pico:</span>
+          }
+          <strong>{{ ponto.valor }}</strong>
+          {{ ponto.valor === 1 ? 'chamado' : 'chamados' }}
+          <span class="texto-suave">
+            @if (granularidade() === 'dia') {
+              em {{ data(ponto.inicio) | date: 'dd/MM/yyyy' }}
+            } @else {
+              em {{ data(ponto.inicio) | date: 'MMMM yyyy' }}
+            }
+          </span>
+        }
+      </p>
+    </div>
+
+    @if (resumo().total === 0) {
+      <p class="texto-suave">Nenhum chamado no período.</p>
+    } @else {
+      <div class="grafico">
+        <span class="eixo-y" aria-hidden="true">
+          <span>{{ maximoSerie() }}</span>
+          <span>0</span>
+        </span>
+        <div
+          class="colunas"
+          (mouseleave)="pontoAtivo.set(null)"
+          role="img"
+          [attr.aria-label]="
+            'Novos chamados por ' +
+            (granularidade() === 'dia' ? 'dia' : 'mês') +
+            '; valores na tabela abaixo'
+          "
+        >
+          @for (ponto of serie(); track ponto.inicio) {
+            <span
+              class="coluna"
+              (mouseenter)="pontoAtivo.set(ponto)"
+              [class.ativa]="pontoAtivo() === ponto"
+            >
+              <span class="barra" [style.height]="alturaColuna(ponto)"></span>
+            </span>
+          }
+        </div>
+      </div>
+      <div class="eixo-x texto-suave" aria-hidden="true">
+        @let primeiro = serie()[0];
+        @let ultimo = serie()[serie().length - 1];
+        <span>{{
+          data(primeiro.inicio) | date: (granularidade() === 'dia' ? 'dd/MM' : 'MMM/yy')
+        }}</span>
+        <span>{{
+          data(ultimo.inicio) | date: (granularidade() === 'dia' ? 'dd/MM' : 'MMM/yy')
+        }}</span>
+      </div>
+
+      <details class="tabela-serie">
+        <summary>Ver como tabela</summary>
+        <div class="tabela-container">
+          <table>
+            <thead>
+              <tr>
+                <th>{{ granularidade() === 'dia' ? 'Dia' : 'Mês' }}</th>
+                <th>Novos chamados</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (ponto of serie(); track ponto.inicio) {
+                <tr>
+                  <td>
+                    <a
+                      routerLink="/chamados"
+                      [queryParams]="link({ de: ponto.inicio, ate: ponto.fim })"
+                    >
+                      {{
+                        data(ponto.inicio)
+                          | date: (granularidade() === 'dia' ? 'dd/MM/yyyy' : 'MMMM yyyy')
+                      }}
+                    </a>
+                  </td>
+                  <td>{{ ponto.valor }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </details>
+    }
+  </section>
+
+  <div class="graficos">
+    <app-grafico-barras titulo="Situação" [barras]="porSituacao()" [filtroBase]="filtroBase()" />
+    <app-grafico-barras
+      titulo="Prioridade"
+      [barras]="porPrioridade()"
+      [filtroBase]="filtroBase()"
+    />
+    <app-grafico-barras
+      titulo="Em aberto por responsável"
+      [barras]="porResponsavel()"
+      [filtroBase]="filtroBase()"
+      vazio="Nenhum chamado em aberto no período."
+    />
+    <app-grafico-barras titulo="Lotação" [barras]="porLotacao()" [filtroBase]="filtroBase()" />
+    <app-grafico-barras titulo="Sistema" [barras]="porSistema()" [filtroBase]="filtroBase()" />
+    <app-grafico-barras titulo="Tipo" [barras]="porTipo()" [filtroBase]="filtroBase()" />
+  </div>
+}

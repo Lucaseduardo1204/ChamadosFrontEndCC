@@ -64,6 +64,7 @@ Autenticação via JWT. Apenas analistas operam o sistema; o solicitante é só 
 | PATCH | `/chamados/{id}/situacao` | `{ situacao }` | `ChamadoResponse` | Sim | ANALISTA |
 | DELETE | `/chamados/{id}` | — | 204 No Content | Sim | ANALISTA |
 | GET | `/chamados/exportar` | — | arquivo .xlsx | Sim | — |
+| POST | `/chamados/exportar` | `{ ids: number[] }` (não vazio) | arquivo .xlsx só com os chamados informados | Sim | — |
 
 ### Interações
 | Método | Rota | Body | Resposta | Auth |
@@ -93,7 +94,7 @@ interface UsuarioResumo {
 
 interface ChamadoRequest {
   codigoChamado: string;
-  lotacao: 'FAEC' | 'FAMEP' | 'PMA';
+  lotacao: string; // texto livre, até 10 caracteres
   prioridade: 'BLOQUEIO' | 'CRITICO' | 'NORMAL' | 'BAIXA' | 'TRIVIAL';
   tipo: 'SISTEMA' | 'TECNICA';
   sistema: string;
@@ -105,7 +106,7 @@ interface ChamadoRequest {
 interface ChamadoResponse {
   id: number;
   codigoChamado: string;
-  lotacao: 'FAEC' | 'FAMEP' | 'PMA';
+  lotacao: string;
   dataHoraCriacao: string;
   situacao: 'ABERTA' | 'FECHADA' | 'RESOLVIDA';
   prioridade: 'BLOQUEIO' | 'CRITICO' | 'NORMAL' | 'BAIXA' | 'TRIVIAL';
@@ -163,12 +164,15 @@ interface AlterarSituacao {
 - Barra de pesquisa (filtro client-side por código, resumo ou solicitante)
 - Botão "Novo Chamado" → abre modal ou navega para `/chamados/novo`
 - Botão "Exportar Excel" → chama `GET /chamados/exportar` e faz download do arquivo
+- Checkbox por linha (e no cabeçalho, que marca todos os resultados do filtro, em todas as páginas): com chamados marcados o botão vira "Exportar selecionados (N)" e chama `POST /chamados/exportar` com os ids
+- Lista filtrada e nada marcado: o botão vira "Exportar filtrados (N)" e exporta todos os resultados do filtro (não só a página atual), também via `POST /chamados/exportar`
+- Filtros de situação, prioridade, tipo, lotação e responsável aceitam vários valores (somam dentro do filtro e se combinam entre filtros)
 - Botão "Sair" (logout) → limpa o localStorage e redireciona para `/login`
 
 ### `/chamados/novo` — Criar chamado
 - Formulário com os campos do `ChamadoRequest`:
   - Código do chamado (texto livre)
-  - Lotação (select: FAEC, FAMEP, PMA)
+  - Lotação (texto livre, obrigatório, até 10 caracteres)
   - Prioridade (select: BLOQUEIO, CRITICO, NORMAL, BAIXA, TRIVIAL)
   - Tipo (select: SISTEMA, TECNICA)
   - Sistema (texto livre)

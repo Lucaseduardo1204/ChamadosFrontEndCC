@@ -1,0 +1,170 @@
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.filtros .campo {
+  width: 200px;
+}
+
+.filtros .campo > span {
+  font-size: 0.8rem;
+  color: var(--cor-texto-suave);
+}
+
+/* ---------- Indicadores ---------- */
+
+.indicadores {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.indicador {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1rem 1.1rem;
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  color: inherit;
+  text-decoration: none;
+}
+
+a.indicador:hover,
+a.indicador:focus-visible {
+  border-color: var(--cor-primaria);
+  outline: none;
+}
+
+.indicador-rotulo {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--cor-texto-suave);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.indicador-valor {
+  font-size: 1.75rem;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.indicador-valor.alerta {
+  color: var(--cor-perigo-texto);
+}
+
+/* Bolinha na cor da situação (a cor saturada é a do texto do badge) */
+.ponto {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* ---------- Série temporal ---------- */
+
+.serie {
+  margin-bottom: 1rem;
+}
+
+.serie-cabecalho {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.serie-destaque {
+  margin: 0 0 0.75rem;
+  min-height: 1.5em;
+}
+
+.grafico {
+  display: flex;
+  gap: 0.5rem;
+  height: 160px;
+}
+
+.eixo-y {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 1.5rem;
+  color: var(--cor-texto-suave);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.colunas {
+  display: flex;
+  flex: 1;
+  align-items: flex-end;
+  border-bottom: 1px solid var(--cor-borda);
+  /* Linha de grade no topo (valor máximo), recessiva */
+  border-top: 1px solid var(--cor-cabecalho-tabela);
+}
+
+/* A coluna inteira é a área de hover; a barra é só a marca dentro dela */
+.coluna {
+  display: flex;
+  flex: 1;
+  align-items: flex-end;
+  height: 100%;
+  padding: 0 1px;
+}
+
+.coluna.ativa {
+  background: var(--cor-primaria-suave);
+}
+
+.coluna .barra {
+  width: 100%;
+  max-width: 24px;
+  margin: 0 auto;
+  border-radius: 4px 4px 0 0;
+  background: var(--cor-primaria);
+}
+
+.eixo-x {
+  display: flex;
+  justify-content: space-between;
+  margin-left: 2rem;
+  padding-top: 0.25rem;
+  font-size: 0.75rem;
+}
+
+.tabela-serie {
+  margin-top: 0.75rem;
+}
+
+.tabela-serie summary {
+  cursor: pointer;
+  color: var(--cor-destaque);
+}
+
+.tabela-serie .tabela-container {
+  max-height: 280px;
+  margin-top: 0.5rem;
+  overflow-y: auto;
+}
+
+.tabela-serie a {
+  color: var(--cor-destaque);
+}
+
+/* ---------- Grade de gráficos ---------- */
+
+.graficos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1rem;
+}

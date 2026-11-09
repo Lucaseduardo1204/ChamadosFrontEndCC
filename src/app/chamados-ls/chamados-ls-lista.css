@@ -1,0 +1,59 @@
+.subtitulo {
+  margin: 0.25rem 0 0;
+}
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.filtros .campo {
+  width: 220px;
+}
+
+.filtros .busca {
+  width: 360px;
+  max-width: 100%;
+}
+
+.filtros .campo > span {
+  font-size: 0.8rem;
+  color: var(--cor-texto-suave);
+}
+
+.linha-clicavel {
+  cursor: pointer;
+}
+
+.linha-clicavel:hover,
+.linha-clicavel:focus-visible {
+  background: var(--cor-primaria-suave);
+  outline: none;
+}
+
+.forte {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.resumo {
+  min-width: 220px;
+}
+
+.observacao {
+  display: block;
+  margin-top: 0.15rem;
+  white-space: pre-wrap;
+}
+
+.data {
+  white-space: nowrap;
+}
+
+.vazio {
+  padding: 2rem;
+  text-align: center;
+  color: var(--cor-texto-suave);
+}

@@ -23,8 +23,22 @@ const chamado = {
 } as ChamadoResponse;
 
 const usuarios = [
-  { id: 1, nome: 'Ana', email: 'ana@x.com', tipoUsuario: 'ANALISTA', fundacao: 'FAEC', ativo: true },
-  { id: 2, nome: 'Bruno', email: 'bruno@x.com', tipoUsuario: 'ANALISTA', fundacao: 'PMA', ativo: true },
+  {
+    id: 1,
+    nome: 'Ana',
+    email: 'ana@x.com',
+    tipoUsuario: 'ANALISTA',
+    fundacao: 'FAEC',
+    ativo: true,
+  },
+  {
+    id: 2,
+    nome: 'Bruno',
+    email: 'bruno@x.com',
+    tipoUsuario: 'ANALISTA',
+    fundacao: 'PMA',
+    ativo: true,
+  },
 ] as Usuario[];
 
 // Regressão: os formulários da tela não tinham [formGroup], então o (ngSubmit) nunca disparava e o
@@ -43,8 +57,12 @@ describe('ChamadoDetalhe', () => {
       buscar: vi.fn(() => of(chamado)),
       listarInteracoes: vi.fn(() => of([])),
       alterarSituacao: vi.fn(() => of({ ...chamado, situacao: 'RESOLVIDA' })),
-      alterarResponsavel: vi.fn(() => of({ ...chamado, responsavel: { id: 2, nome: 'Bruno', fundacao: 'PMA' } })),
-      comentar: vi.fn(() => of({ id: 1, autor: { id: 1, nome: 'Ana' }, texto: 'Oi', dataHora: '2026-09-26T11:00:00' })),
+      alterarResponsavel: vi.fn(() =>
+        of({ ...chamado, responsavel: { id: 2, nome: 'Bruno', fundacao: 'PMA' } }),
+      ),
+      comentar: vi.fn(() =>
+        of({ id: 1, autor: { id: 1, nome: 'Ana' }, texto: 'Oi', dataHora: '2026-09-26T11:00:00' }),
+      ),
     };
     await TestBed.configureTestingModule({
       imports: [ChamadoDetalhe],

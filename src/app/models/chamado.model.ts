@@ -1,16 +1,14 @@
-import { FUNDACOES, Fundacao, UsuarioResumo } from './usuario.model';
+import { UsuarioResumo } from './usuario.model';
 
 /** Tamanhos máximos dos campos de texto: os mesmos do `@Size` no backend e das colunas no banco. */
 export const LIMITES_CHAMADO = {
   codigoChamado: 20,
+  lotacao: 10,
   sistema: 50,
   resumo: 100,
   descricao: 500,
   solicitante: 100,
 } as const;
-
-export const LOTACOES = FUNDACOES;
-export type Lotacao = Fundacao;
 
 export const SITUACOES = ['ABERTA', 'RESOLVIDA', 'FECHADA'] as const;
 export type Situacao = (typeof SITUACOES)[number];
@@ -42,7 +40,8 @@ export const TIPO_LABEL: Record<TipoChamado, string> = {
 
 export interface ChamadoRequest {
   codigoChamado: string;
-  lotacao: Lotacao;
+  /** Texto livre (não é uma fundação fixa). */
+  lotacao: string;
   prioridade: Prioridade;
   tipo: TipoChamado;
   sistema: string;
@@ -55,7 +54,7 @@ export interface ChamadoRequest {
 export interface ChamadoResponse {
   id: number;
   codigoChamado: string;
-  lotacao: Lotacao;
+  lotacao: string;
   dataHoraCriacao: string;
   situacao: Situacao;
   prioridade: Prioridade;

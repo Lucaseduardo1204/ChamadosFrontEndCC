@@ -1,0 +1,105 @@
+<div class="pagina-cabecalho">
+  <div>
+    <h1>Chamados LS</h1>
+    <p class="texto-suave subtitulo">Chamados abertos no LS para o desenvolvimento.</p>
+  </div>
+  <a class="btn btn-primario" routerLink="/chamados-ls/novo">Novo chamado LS</a>
+</div>
+
+<div class="filtros" role="search">
+  <label class="campo">
+    <span>Situação no LS</span>
+    <select (change)="filtrar('situacao', $any($event.target).value)">
+      @for (situacao of situacoes; track situacao) {
+        <option [value]="situacao" [selected]="situacao === filtros().situacao">
+          {{ situacaoLabel[situacao] }} ({{ contagem()[situacao] ?? 0 }})
+        </option>
+      }
+      <option [value]="todas" [selected]="filtros().situacao === todas">
+        Todas ({{ contagem()[todas] }})
+      </option>
+    </select>
+  </label>
+
+  <label class="campo busca">
+    <span>Pesquisar</span>
+    <input
+      type="search"
+      placeholder="Nº do LS, código do chamado ou resumo"
+      [value]="filtros().busca"
+      (input)="filtrar('busca', $any($event.target).value)"
+    />
+  </label>
+</div>
+
+@if (carregando()) {
+  <div class="carregando"><span class="spinner"></span> Carregando chamados do LS…</div>
+} @else {
+  <div class="tabela-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Nº LS</th>
+          <th>Chamado</th>
+          <th>Resumo</th>
+          <th>Lotação</th>
+          <th>Situação no LS</th>
+          <th>Aberto por</th>
+          <th>Abertura</th>
+          <th>Conclusão</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (ls of daPagina(); track ls.id) {
+          <tr
+            [class.linha-clicavel]="ls.chamado"
+            [attr.tabindex]="ls.chamado ? 0 : null"
+            (click)="abrir(ls)"
+            (keydown.enter)="abrir(ls)"
+          >
+            <td class="forte">{{ ls.numeroLs }}</td>
+            <td class="forte">
+              @if (ls.chamado) {
+                {{ ls.chamado.codigoChamado }}
+              } @else {
+                <span class="texto-suave" title="Sem chamado relacionado neste sistema">—</span>
+              }
+            </td>
+            <td class="resumo">
+              {{ ls.resumo }}
+              @if (ls.observacao) {
+                <small class="texto-suave observacao">{{ ls.observacao }}</small>
+              }
+            </td>
+            <td>{{ ls.lotacao ?? '—' }}</td>
+            <td>
+              <span class="badge" [class]="'ls-' + ls.situacao">
+                {{ situacaoLabel[ls.situacao] }}
+              </span>
+            </td>
+            <td>{{ ls.abertoPor.nome }}</td>
+            <td class="data">{{ ls.dataHoraAbertura | date: 'dd/MM/yyyy HH:mm' }}</td>
+            <td class="data">
+              @if (ls.dataHoraConclusao) {
+                {{ ls.dataHoraConclusao | date: 'dd/MM/yyyy HH:mm' }}
+              } @else {
+                <span class="texto-suave">—</span>
+              }
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="8" class="vazio">
+              @if (registros().length === 0) {
+                Nenhum chamado aberto no LS ainda.
+              } @else {
+                Nenhum chamado do LS com esses filtros.
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <app-paginacao [total]="filtrados().length" [(pagina)]="pagina" />
+}

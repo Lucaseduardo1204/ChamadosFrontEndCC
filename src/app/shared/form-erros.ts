@@ -30,6 +30,10 @@ export function mensagemDoCampo(controle: AbstractControl): string {
   if (typeof erros['servidor'] === 'string') {
     return erros['servidor'];
   }
+  // Validadores próprios que já trazem o texto: `{ mensagem: '...' }`
+  if (typeof erros['mensagem'] === 'string') {
+    return erros['mensagem'];
+  }
   if (erros['maxlength']) {
     return `Máximo de ${erros['maxlength'].requiredLength} caracteres.`;
   }

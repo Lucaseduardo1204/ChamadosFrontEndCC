@@ -1,0 +1,69 @@
+:host {
+  display: block;
+}
+
+.card {
+  height: 100%;
+}
+
+.barras {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.linha {
+  display: grid;
+  grid-template-columns: minmax(80px, 9rem) 1fr auto;
+  align-items: center;
+  gap: 0.75rem;
+  /* Área clicável maior que a barra */
+  min-height: 2rem;
+  padding: 0.2rem 0.4rem;
+  margin: 0 -0.4rem;
+  border-radius: var(--raio);
+  color: inherit;
+  text-decoration: none;
+}
+
+a.linha:hover,
+a.linha:focus-visible {
+  background: var(--cor-primaria-suave);
+  outline: none;
+}
+
+a.linha:hover .rotulo,
+a.linha:focus-visible .rotulo {
+  color: var(--cor-destaque);
+}
+
+.rotulo {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.trilha {
+  display: block;
+  height: 10px;
+}
+
+/* A cor vem da classe de badge (texto saturado do status); sem classe, cor primária. */
+.trilha .preenchimento {
+  display: block;
+  height: 100%;
+  border-radius: 0 4px 4px 0;
+  color: var(--cor-primaria);
+  background: currentColor;
+}
+
+.valor {
+  min-width: 4.5rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.vazio {
+  margin: 0;
+}

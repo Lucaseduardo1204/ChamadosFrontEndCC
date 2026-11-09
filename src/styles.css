@@ -374,9 +374,21 @@ tbody tr:last-child td {
   color: var(--status-cinza-texto);
 }
 
-.prioridade-NORMAL {
+.prioridade-NORMAL,
+.ls-EM_ANALISE {
   background: var(--status-amarelo-fundo);
   color: var(--status-amarelo-texto);
+}
+
+/* Situação do chamado no LS: em análise amarelo (aguardando), concluído verde, cancelado cinza */
+.ls-CONCLUIDO {
+  background: var(--status-verde-fundo);
+  color: var(--status-verde-texto);
+}
+
+.ls-CANCELADO {
+  background: var(--status-cinza-fundo);
+  color: var(--status-cinza-texto);
 }
 
 /* ---------- Loading ---------- */

@@ -1,0 +1,98 @@
+<section class="card">
+  <h2>LS (desenvolvimento)</h2>
+
+  @if (carregando()) {
+    <p class="texto-suave">Carregando…</p>
+  } @else {
+    @if (emAnalise(); as ls) {
+      <div class="em-analise">
+        <div class="cabecalho">
+          <strong>{{ ls.numeroLs }}</strong>
+          <span class="badge ls-EM_ANALISE">{{ situacaoLabel.EM_ANALISE }}</span>
+        </div>
+        <p class="texto-suave meta">
+          {{ ls.abertoPor.nome }} · {{ ls.dataHoraAbertura | date: 'dd/MM/yyyy HH:mm' }}
+        </p>
+        @if (ls.observacao) {
+          <p class="observacao">{{ ls.observacao }}</p>
+        }
+
+        <label class="campo" [class.invalido]="retornoCtrl.invalid">
+          <span>Retorno do desenvolvimento (opcional)</span>
+          <textarea
+            [formControl]="retornoCtrl"
+            rows="2"
+            [attr.maxlength]="limites.observacao"
+          ></textarea>
+        </label>
+        <div class="botoes">
+          <button
+            type="button"
+            class="btn btn-primario"
+            [disabled]="processando()"
+            (click)="finalizar('CONCLUIDO')"
+          >
+            Concluir
+          </button>
+          <button
+            type="button"
+            class="btn"
+            [disabled]="processando()"
+            (click)="finalizar('CANCELADO')"
+          >
+            Cancelar LS
+          </button>
+        </div>
+      </div>
+    } @else if (fechado()) {
+      <p class="texto-suave">Chamados fechados não podem ser enviados ao LS.</p>
+    } @else {
+      <form class="formulario" [formGroup]="form" (ngSubmit)="abrir()" novalidate>
+        <label class="campo" [class.invalido]="invalido('numeroLs')">
+          <span>Nº do chamado no LS *</span>
+          <input type="text" formControlName="numeroLs" [attr.maxlength]="limites.numeroLs" />
+          @if (invalido('numeroLs')) {
+            <small class="erro-campo">{{ mensagemCampo('numeroLs') }}</small>
+          }
+        </label>
+        <label class="campo" [class.invalido]="invalido('observacao')">
+          <span>Observação</span>
+          <textarea
+            formControlName="observacao"
+            rows="2"
+            [attr.maxlength]="limites.observacao"
+          ></textarea>
+          @if (invalido('observacao')) {
+            <small class="erro-campo">{{ mensagemCampo('observacao') }}</small>
+          }
+        </label>
+        <button type="submit" class="btn btn-primario" [disabled]="processando()">
+          Registrar no LS
+        </button>
+      </form>
+    }
+
+    @if (historico().length) {
+      <h3 class="rotulo-historico">Anteriores</h3>
+      <ul class="historico">
+        @for (ls of historico(); track ls.id) {
+          <li>
+            <div class="cabecalho">
+              <strong>{{ ls.numeroLs }}</strong>
+              <span class="badge" [class]="'ls-' + ls.situacao">
+                {{ situacaoLabel[ls.situacao] }}
+              </span>
+            </div>
+            <p class="texto-suave meta">
+              {{ ls.dataHoraAbertura | date: 'dd/MM/yyyy' }} –
+              {{ ls.dataHoraConclusao | date: 'dd/MM/yyyy' }}
+            </p>
+            @if (ls.observacao) {
+              <p class="observacao">{{ ls.observacao }}</p>
+            }
+          </li>
+        }
+      </ul>
+    }
+  }
+</section>

@@ -1,0 +1,42 @@
+<section class="card">
+  <h2>{{ titulo() }}</h2>
+
+  @if (total() === 0) {
+    <p class="texto-suave vazio">{{ vazio() }}</p>
+  } @else {
+    <ul class="barras">
+      @for (barra of barras(); track barra.rotulo) {
+        <li>
+          <ng-template #conteudo>
+            <span class="rotulo" [title]="barra.rotulo">{{ barra.rotulo }}</span>
+            <span class="trilha" aria-hidden="true">
+              <span
+                class="preenchimento"
+                [class]="barra.classe"
+                [style.width]="largura(barra)"
+              ></span>
+            </span>
+            <span class="valor">
+              {{ barra.valor }} <span class="texto-suave">· {{ percentual(barra) }}</span>
+            </span>
+          </ng-template>
+
+          @if (temLink(barra)) {
+            <a
+              class="linha"
+              routerLink="/chamados"
+              [queryParams]="queryParams(barra)"
+              [attr.aria-label]="barra.rotulo + ': ' + barra.valor + ' chamados. Ver na lista'"
+            >
+              <ng-container [ngTemplateOutlet]="conteudo" />
+            </a>
+          } @else {
+            <div class="linha">
+              <ng-container [ngTemplateOutlet]="conteudo" />
+            </div>
+          }
+        </li>
+      }
+    </ul>
+  }
+</section>

@@ -3,8 +3,6 @@ import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angula
 import { Router, RouterLink } from '@angular/router';
 import {
   ChamadoRequest,
-  LOTACOES,
-  Lotacao,
   PRIORIDADES,
   PRIORIDADE_LABEL,
   Prioridade,
@@ -31,7 +29,6 @@ export class ChamadoNovo {
   private readonly toast = inject(ToastService);
   private readonly router = inject(Router);
 
-  protected readonly lotacoes = LOTACOES;
   protected readonly prioridades = PRIORIDADES;
   protected readonly tipos = TIPOS;
   protected readonly prioridadeLabel = PRIORIDADE_LABEL;
@@ -43,7 +40,15 @@ export class ChamadoNovo {
   // A situação não é enviada: o backend cria todo chamado como ABERTA.
   protected readonly form = inject(NonNullableFormBuilder).group({
     codigoChamado: ['', [Validators.required, Validators.maxLength(LIMITES_CHAMADO.codigoChamado)]],
-    lotacao: ['' as Lotacao | '', Validators.required],
+    // Texto livre, como o solicitante; o pattern recusa um valor só com espaços.
+    lotacao: [
+      '',
+      [
+        Validators.required,
+        Validators.pattern(/\S/),
+        Validators.maxLength(LIMITES_CHAMADO.lotacao),
+      ],
+    ],
     prioridade: ['' as Prioridade | '', Validators.required],
     tipo: ['' as TipoChamado | '', Validators.required],
     sistema: ['', [Validators.required, Validators.maxLength(LIMITES_CHAMADO.sistema)]],
@@ -76,7 +81,11 @@ export class ChamadoNovo {
     }
 
     const valor = this.form.getRawValue();
-    const chamado = { ...valor, solicitante: valor.solicitante.trim() } as ChamadoRequest;
+    const chamado = {
+      ...valor,
+      lotacao: valor.lotacao.trim(),
+      solicitante: valor.solicitante.trim(),
+    } as ChamadoRequest;
 
     this.salvando.set(true);
     this.chamadoService.criar(chamado).subscribe({

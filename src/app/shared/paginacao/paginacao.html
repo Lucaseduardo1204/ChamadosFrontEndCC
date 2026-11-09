@@ -1,0 +1,41 @@
+@if (paginas() > 1) {
+  <nav class="paginacao" aria-label="Páginas">
+    <span class="texto-suave intervalo">{{ inicio() }}–{{ fim() }} de {{ total() }}</span>
+    <div class="abas">
+      <button
+        type="button"
+        class="aba"
+        [disabled]="atual() === 1"
+        (click)="ir(atual() - 1)"
+        aria-label="Página anterior"
+      >
+        ‹
+      </button>
+      @for (aba of abas(); track $index) {
+        @if (aba === null) {
+          <span class="salto" aria-hidden="true">…</span>
+        } @else {
+          <button
+            type="button"
+            class="aba"
+            [class.ativa]="aba === atual()"
+            [attr.aria-current]="aba === atual() ? 'page' : null"
+            [attr.aria-label]="'Página ' + aba"
+            (click)="ir(aba)"
+          >
+            {{ aba }}
+          </button>
+        }
+      }
+      <button
+        type="button"
+        class="aba"
+        [disabled]="atual() === paginas()"
+        (click)="ir(atual() + 1)"
+        aria-label="Próxima página"
+      >
+        ›
+      </button>
+    </div>
+  </nav>
+}

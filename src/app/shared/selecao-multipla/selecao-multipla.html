@@ -1,0 +1,39 @@
+<div class="campo">
+  <span [id]="id + '-rotulo'">{{ rotulo() }}</span>
+  <button
+    type="button"
+    class="gatilho"
+    [class.ativo]="selecionados().length > 0"
+    [attr.aria-expanded]="aberto()"
+    [attr.aria-controls]="id + '-lista'"
+    [attr.aria-labelledby]="id + '-rotulo ' + id + '-resumo'"
+    (click)="alternarAberto()"
+  >
+    <span class="resumo" [id]="id + '-resumo'">{{ resumo() }}</span>
+    <span class="seta" aria-hidden="true">▾</span>
+  </button>
+</div>
+
+@if (aberto()) {
+  <div class="painel" [id]="id + '-lista'" role="group" [attr.aria-labelledby]="id + '-rotulo'">
+    <ul>
+      @for (opcao of opcoes(); track opcao.valor) {
+        <li>
+          <label>
+            <input
+              type="checkbox"
+              [checked]="marcado(opcao.valor)"
+              (change)="alternar(opcao.valor, $any($event.target).checked)"
+            />
+            {{ opcao.rotulo }}
+          </label>
+        </li>
+      } @empty {
+        <li class="vazio">Nenhuma opção</li>
+      }
+    </ul>
+    @if (selecionados().length > 0) {
+      <button type="button" class="btn btn-pequeno limpar" (click)="limpar()">Limpar</button>
+    }
+  </div>
+}

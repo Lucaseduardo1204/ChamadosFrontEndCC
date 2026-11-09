@@ -1,0 +1,97 @@
+:host {
+  position: relative;
+  display: block;
+}
+
+.campo > span {
+  font-size: 0.8rem;
+  color: var(--cor-texto-suave);
+}
+
+.gatilho {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  background: var(--cor-superficie);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.gatilho:focus-visible {
+  outline: 2px solid var(--cor-primaria-suave);
+  border-color: var(--cor-primaria);
+}
+
+.gatilho.ativo {
+  border-color: var(--cor-primaria);
+}
+
+.resumo {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.seta {
+  color: var(--cor-texto-suave);
+}
+
+.painel {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 100%;
+  max-width: min(320px, calc(100vw - 32px));
+  padding: 0.35rem;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  background: var(--cor-superficie);
+  box-shadow: var(--sombra);
+}
+
+ul {
+  max-height: 260px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.4rem;
+  border-radius: var(--raio);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+label:hover {
+  background: var(--cor-primaria-suave);
+}
+
+input {
+  width: 1rem;
+  height: 1rem;
+  padding: 0;
+  accent-color: var(--cor-primaria);
+}
+
+.vazio {
+  padding: 0.35rem 0.4rem;
+  color: var(--cor-texto-suave);
+}
+
+.limpar {
+  width: 100%;
+  margin-top: 0.35rem;
+}

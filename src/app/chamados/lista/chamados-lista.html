@@ -1,24 +1,125 @@
 <div class="pagina-cabecalho">
   <h1>Chamados</h1>
   <div class="acoes">
-    <button type="button" class="btn" (click)="exportar()" [disabled]="exportando()">
+    <button
+      type="button"
+      class="btn"
+      (click)="exportar()"
+      [disabled]="exportando() || exportacao().quantidade === 0"
+    >
       @if (exportando()) {
         <span class="spinner spinner-pequeno spinner-escuro" aria-hidden="true"></span>
       }
-      Exportar Excel
+      @switch (exportacao().modo) {
+        @case ('selecionados') {
+          Exportar selecionados ({{ exportacao().quantidade }})
+        }
+        @case ('filtrados') {
+          Exportar filtrados ({{ exportacao().quantidade }})
+        }
+        @default {
+          Exportar Excel
+        }
+      }
     </button>
     <a class="btn btn-primario" routerLink="/chamados/novo">Novo Chamado</a>
   </div>
 </div>
 
-<input
-  type="search"
-  class="busca"
-  placeholder="Pesquisar por código, resumo ou solicitante"
-  aria-label="Pesquisar chamados"
-  [value]="busca()"
-  (input)="busca.set($any($event.target).value)"
-/>
+<div class="filtros" role="search">
+  <label class="campo busca">
+    <span>Pesquisar</span>
+    <input
+      type="search"
+      placeholder="Código, resumo ou solicitante"
+      [value]="filtros().busca"
+      (input)="filtrar('busca', $any($event.target).value)"
+    />
+  </label>
+
+  <app-selecao-multipla
+    rotulo="Situação"
+    [opcoes]="opcoesSituacao"
+    [selecionados]="filtros().situacao"
+    (alterado)="filtrar('situacao', $event)"
+  />
+
+  <app-selecao-multipla
+    rotulo="Prioridade"
+    [opcoes]="opcoesPrioridade"
+    [selecionados]="filtros().prioridade"
+    (alterado)="filtrar('prioridade', $event)"
+  />
+
+  <app-selecao-multipla
+    rotulo="Tipo"
+    textoTodos="Todos"
+    [opcoes]="opcoesTipo"
+    [selecionados]="filtros().tipo"
+    (alterado)="filtrar('tipo', $event)"
+  />
+
+  <app-selecao-multipla
+    rotulo="Lotação"
+    [opcoes]="opcoesLotacao()"
+    [selecionados]="filtros().lotacao"
+    (alterado)="filtrar('lotacao', $event)"
+  />
+
+  <app-selecao-multipla
+    rotulo="Responsável"
+    textoTodos="Todos"
+    [opcoes]="opcoesResponsavel()"
+    [selecionados]="filtros().responsavel"
+    (alterado)="filtrar('responsavel', $event)"
+  />
+
+  <label class="campo">
+    <span>Aberto de</span>
+    <input
+      type="date"
+      [value]="filtros().de"
+      [max]="filtros().ate || null"
+      (change)="filtrar('de', $any($event.target).value)"
+    />
+  </label>
+
+  <label class="campo">
+    <span>Até</span>
+    <input
+      type="date"
+      [value]="filtros().ate"
+      [min]="filtros().de || null"
+      (change)="filtrar('ate', $any($event.target).value)"
+    />
+  </label>
+</div>
+
+@if (!carregando()) {
+  <div class="resultado">
+    <span class="texto-suave" aria-live="polite">
+      @if (filtrando()) {
+        {{ chamadosFiltrados().length }} de {{ chamados().length }} chamados
+      } @else {
+        {{ chamados().length }} {{ chamados().length === 1 ? 'chamado' : 'chamados' }}
+      }
+    </span>
+    @if (filtrando()) {
+      <button type="button" class="btn btn-pequeno" (click)="limparFiltros()">
+        Limpar filtros
+      </button>
+    }
+    @if (quantidadeSelecionada() > 0) {
+      <span class="selecao" aria-live="polite">
+        {{ quantidadeSelecionada() }}
+        {{ quantidadeSelecionada() === 1 ? 'selecionado' : 'selecionados' }}
+      </span>
+      <button type="button" class="btn btn-pequeno" (click)="limparSelecao()">
+        Limpar seleção
+      </button>
+    }
+  </div>
+}
 
 @if (carregando()) {
   <div class="carregando"><span class="spinner"></span> Carregando chamados…</div>
@@ -27,6 +128,22 @@
     <table>
       <thead>
         <tr>
+          <th class="coluna-selecao">
+            <input
+              type="checkbox"
+              [attr.aria-label]="
+                'Selecionar todos os ' +
+                chamadosFiltrados().length +
+                ' chamados ' +
+                (filtrando() ? 'filtrados' : 'da lista')
+              "
+              [title]="'Selecionar todos os ' + chamadosFiltrados().length + ' (todas as páginas)'"
+              [checked]="filtradosSelecionados().todos"
+              [indeterminate]="filtradosSelecionados().alguns && !filtradosSelecionados().todos"
+              [disabled]="chamadosFiltrados().length === 0"
+              (change)="alternarFiltrados($any($event.target).checked)"
+            />
+          </th>
           <th>Código</th>
           <th>Lotação</th>
           <th>Situação</th>
@@ -40,13 +157,24 @@
         </tr>
       </thead>
       <tbody>
-        @for (chamado of chamadosFiltrados(); track chamado.id) {
+        @for (chamado of chamadosDaPagina(); track chamado.id) {
           <tr
             class="linha-clicavel"
             tabindex="0"
             (click)="abrir(chamado)"
+            [class.selecionada]="selecionados().has(chamado.id)"
             (keydown.enter)="abrir(chamado)"
           >
+            <!-- stopPropagation: marcar o checkbox não deve abrir o chamado -->
+            <td class="coluna-selecao" (click)="$event.stopPropagation()">
+              <input
+                type="checkbox"
+                [attr.aria-label]="'Selecionar ' + chamado.codigoChamado"
+                [checked]="selecionados().has(chamado.id)"
+                (change)="alternarSelecao(chamado, $any($event.target).checked)"
+                (keydown.enter)="$event.stopPropagation()"
+              />
+            </td>
             <td class="codigo">{{ chamado.codigoChamado }}</td>
             <td>{{ chamado.lotacao }}</td>
             <td>
@@ -74,10 +202,10 @@
           </tr>
         } @empty {
           <tr>
-            <td colspan="10" class="vazio">
+            <td colspan="11" class="vazio">
               {{
-                busca()
-                  ? 'Nenhum chamado encontrado para a pesquisa.'
+                filtrando()
+                  ? 'Nenhum chamado encontrado com esses filtros.'
                   : 'Nenhum chamado cadastrado.'
               }}
             </td>
@@ -86,4 +214,5 @@
       </tbody>
     </table>
   </div>
+  <app-paginacao [total]="chamadosFiltrados().length" [(pagina)]="pagina" />
 }

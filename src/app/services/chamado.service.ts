@@ -39,6 +39,11 @@ export class ChamadoService {
     return this.http.get(`${this.url}/exportar`, { responseType: 'blob' });
   }
 
+  /** POST porque a lista de ids pode ser grande demais para a URL. */
+  exportarSelecionados(ids: number[]): Observable<Blob> {
+    return this.http.post(`${this.url}/exportar`, { ids }, { responseType: 'blob' });
+  }
+
   listarInteracoes(id: number): Observable<InteracaoResponse[]> {
     return this.http.get<InteracaoResponse[]>(`${this.url}/${id}/interacoes`);
   }

@@ -17,10 +17,11 @@ import { mensagemErro } from '../../services/api';
 import { ChamadoService } from '../../services/chamado.service';
 import { ToastService } from '../../services/toast.service';
 import { UsuarioService } from '../../services/usuario.service';
+import { SecaoLs } from './secao-ls';
 
 @Component({
   selector: 'app-chamado-detalhe',
-  imports: [DatePipe, ReactiveFormsModule, RouterLink],
+  imports: [DatePipe, ReactiveFormsModule, RouterLink, SecaoLs],
   templateUrl: './chamado-detalhe.html',
   styleUrl: './chamado-detalhe.css',
 })
